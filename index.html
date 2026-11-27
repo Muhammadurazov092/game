@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>TURBO RACE 3D — Premium Racing</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading -->
+    <div id="loading">
+        <div class="loader-content">
+            <div class="loader-logo">TURBO<span>RACE</span></div>
+            <div class="loader-bar"><div class="loader-fill"></div></div>
+            <p>Yuklanmoqda...</p>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="mainMenu" class="screen">
+        <div class="menu-bg"></div>
+        <div class="menu-content">
+            <h1 class="game-title">TURBO<span>RACE</span></h1>
+            <p class="game-subtitle">3D PREMIUM RACING</p>
+            <div class="menu-buttons">
+                <button class="menu-btn primary" onclick="showScreen('garage')">O‘YINNI BOSHLASH</button>
+                <button class="menu-btn" onclick="showScreen('garage')">GARAGE</button>
+                <button class="menu-btn" onclick="showScreen('settings')">SOZLAMALAR</button>
+            </div>
+            <p class="controls-hint">Boshqaruv: W A S D yoki ↑ ← ↓ → &nbsp;|&nbsp; Nitro: SHIFT &nbsp;|&nbsp; Kamera: C</p>
+        </div>
+    </div>
+
+    <!-- Garage -->
+    <div id="garage" class="screen hidden">
+        <div class="garage-header">
+            <button class="back-btn" onclick="showScreen('mainMenu')">← ORQAGA</button>
+            <h2>GARAGE</h2>
+            <button class="menu-btn primary small" onclick="startGame()">POYGAGA START</button>
+        </div>
+        <div class="garage-body">
+            <div class="car-preview" id="carPreview">
+                <div class="car-name" id="previewName">McLaren 720S</div>
+                <div class="car-class" id="previewClass">HYPERCAR</div>
+            </div>
+            <div class="car-list" id="carList"></div>
+            <div class="car-stats" id="carStats">
+                <div class="stat">
+                    <label>TEZLANISH</label>
+                    <div class="stat-bar"><div class="stat-fill" id="statAccel"></div></div>
+                </div>
+                <div class="stat">
+                    <label>MAKS. TEZLIK</label>
+                    <div class="stat-bar"><div class="stat-fill" id="statSpeed"></div></div>
+                </div>
+                <div class="stat">
+                    <label>BOSHQARUV</label>
+                    <div class="stat-bar"><div class="stat-fill" id="statHandling"></div></div>
+                </div>
+                <div class="stat">
+                    <label>TORMOZ</label>
+                    <div class="stat-bar"><div class="stat-fill" id="statBrake"></div></div>
+                </div>
+            </div>
+        </div>
+        <div class="track-select">
+            <h3>TRASSA TANLANG</h3>
+            <div class="tracks" id="trackList">
+                <div class="track-card active" data-track="city" onclick="selectTrack('city')">
+                    <div class="track-icon">🌃</div>
+                    <span>Tungi Shahar</span>
+                </div>
+                <div class="track-card" data-track="desert" onclick="selectTrack('desert')">
+                    <div class="track-icon">🏜️</div>
+                    <span>Cho‘l</span>
+                </div>
+                <div class="track-card" data-track="mountain" onclick="selectTrack('mountain')">
+                    <div class="track-icon">🏔️</div>
+                    <span>Tog‘</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings -->
+    <div id="settings" class="screen hidden">
+        <div class="settings-content">
+            <h2>SOZLAMALAR</h2>
+            <div class="setting-item">
+                <label>Ovoz</label>
+                <input type="range" id="volumeSlider" min="0" max="100" value="50">
+            </div>
+            <div class="setting-item">
+                <label>Qiyinlik</label>
+                <select id="difficulty">
+                    <option value="easy">Oson</option>
+                    <option value="medium" selected>O‘rta</option>
+                    <option value="hard">Qiyin</option>
+                </select>
+            </div>
+            <button class="menu-btn primary" onclick="showScreen('mainMenu')">SAQLASH</button>
+        </div>
+    </div>
+
+    <!-- Game HUD -->
+    <div id="hud" class="hidden">
+        <div class="hud-top">
+            <div class="hud-position">
+                <span class="pos-num" id="position">1</span>
+                <span class="pos-total">/4</span>
+            </div>
+            <div class="hud-lap">
+                <span>Aylana</span>
+                <strong id="lap">1/3</strong>
+            </div>
+            <div class="hud-time">
+                <span>Vaqt</span>
+                <strong id="raceTime">00:00.000</strong>
+            </div>
+        </div>
+        <div class="hud-bottom">
+            <div class="speedometer">
+                <div class="speed-value" id="speed">0</div>
+                <div class="speed-unit">KM/H</div>
+            </div>
+            <div class="nitro-bar">
+                <div class="nitro-fill" id="nitroFill"></div>
+                <span>NITRO</span>
+            </div>
+        </div>
+        <div class="minimap" id="minimap">
+            <canvas id="minimapCanvas" width="140" height="140"></canvas>
+        </div>
+        <button class="pause-btn" onclick="togglePause()">⏸</button>
+    </div>
+
+    <!-- Pause Menu -->
+    <div id="pauseMenu" class="screen hidden">
+        <div class="pause-content">
+            <h2>PAUZA</h2>
+            <button class="menu-btn primary" onclick="togglePause()">DAVOM ETISH</button>
+            <button class="menu-btn" onclick="restartRace()">QAYTA START</button>
+            <button class="menu-btn" onclick="exitToMenu()">MENYUGA</button>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="screen hidden">
+        <div class="results-content">
+            <h2 id="resultsTitle">POYGA TUGADI</h2>
+            <div class="results-pos" id="resultsPos">1-o‘rin</div>
+            <div class="results-time" id="resultsTime">00:00.000</div>
+            <div class="results-buttons">
+                <button class="menu-btn primary" onclick="restartRace()">YANA O‘YNASH</button>
+                <button class="menu-btn" onclick="exitToMenu()">MENYUGA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Controls -->
+    <div id="mobileControls" class="hidden">
+        <div class="mobile-left">
+            <button class="m-btn" id="btnLeft">◀</button>
+            <button class="m-btn" id="btnRight">▶</button>
+        </div>
+        <div class="mobile-right">
+            <button class="m-btn m-accel" id="btnAccel">▲</button>
+            <button class="m-btn" id="btnBrake">▼</button>
+            <button class="m-btn m-nitro" id="btnNitro">N</button>
+        </div>
+    </div>
+
+    <!-- Three.js Canvas -->
+    <canvas id="gameCanvas"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
